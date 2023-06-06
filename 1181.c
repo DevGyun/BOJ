@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define MAX_STR_LEN 50
+#define MAX_STR_LEN 51
 
 typedef struct TreeNode
 {
@@ -10,45 +10,62 @@ typedef struct TreeNode
     int wordLen;
     struct TreeNode* left, * right;
 } TreeNode;
+
 TreeNode* newNode(char* item)
 {
     TreeNode* temp = (TreeNode*)malloc(sizeof(TreeNode));
     strcpy(temp->word, item);
+    temp->wordLen = strlen(item);
     temp->left = temp->right = NULL;
     return temp;
 }
-void insertNode(TreeNode* node, char* item)
+TreeNode* insertNode(TreeNode* node, char* item, int itemLen)
 {
-    if (node == NULL)
+    if(node == NULL)
     {
         node = newNode(item);
-        return;
+        return node;
     }
-    if (strcmp(item, node->word) == 0)
-        return;
-    else if (strcmp(item, node->word) < 0)
-        insertNode(node->left, item);
-    else if (strcmp(item, node->word) > 0)
-        insertNode(node->right, item);
+    if(node->wordLen > itemLen)
+        node->left = insertNode(node->left, item, itemLen);
+    else if(node->wordLen < itemLen)
+        node->right = insertNode(node->right, item, itemLen);
+    else
+    {
+        switch(strcmp(node->word, item))
+        {
+            case 0:
+                return node;
+                break;
+            case 1: //item is small
+                node->left = insertNode(node->left, item, itemLen);
+                break;
+            case -1: //item is big
+                node->right = insertNode(node->right, item, itemLen);
+                break;
+        }
+    }
+    return node;
 }
 void printList(TreeNode* node)
 {
     if (node == NULL) return;
     printList(node->left);
-    printf("%s", node->word);
+    printf("%s\n", node->word);
     printList(node->right);
 }
 int main()
 {
     int N;
-    TreeNode* wordList = (TreeNode*)malloc(sizeof(TreeNode));
+    TreeNode* wordList = NULL;
     char tempWord[MAX_STR_LEN];
 
     scanf("%d", &N);
     for (int i = 0; i < N; i++)
     {
-        scanf(" %s", tempWord);
-        insertNode(wordList, tempWord);
+        scanf("%s", tempWord);
+        wordList = insertNode(wordList, tempWord, strlen(tempWord));
     }
     printList(wordList);
+    return 0;
 }
