@@ -2,11 +2,14 @@
 
 int main()
 {
-    for(int i = 0; i < 10; i++)
-    {
-        char temp[51];
-        scanf("%s ",temp);
-        printf("%s\n",temp);
-        printf("done\n");
-    }
+    double db;
+    int i;
+    char c;
+    char str[6];
+    scanf("%lf", &db);
+    scanf("%d", &i);
+    scanf(" %c", &c);
+    scanf("%s", str);
+    printf("%lf, %d, %c, %s",db,i,c,str);
+    printf("%s", str);
 }
